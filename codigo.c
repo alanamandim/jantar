@@ -41,11 +41,9 @@ void larga_hashi(int f, int h){
 
 void *threadFilosofo (void *arg){
    
-  // int k=0;
+   int k=0;
    int i = (long int ) arg;
    while(1){
-//while(k<1000){
-     //medita(fil);
      medita(i);
      sem_wait(&saleiro);
      pega_hashi(i,i);
@@ -54,11 +52,12 @@ void *threadFilosofo (void *arg){
      come(i);
      larga_hashi(i,i);
      larga_hashi(i,(i+1) % NUMFILO);
-     //k++;
-     //if(fill<NUMFILO-1){
-        //fil++;
-     // }else{fill=0;}
-      
+     k++;
+     if(k==14){
+       printf("O filosofo %d pararou de comer\n",i);
+       break;
+     }
+    
    }
    pthread_exit( NULL );
 }
@@ -71,7 +70,7 @@ int main (int argc, char *argv[]){
    for(i=0;i<NUMFILO;i++)
      sem_init(&hashi[i],0,1);
 
-   sem_init(&saleiro, 0, NUMFILO-1);
+   sem_init(&saleiro, 0, 1);
    
    for(i=0;i<NUMFILO;i++){
      status = pthread_create(&filosofo[i], NULL, threadFilosofo, (void*)i);
